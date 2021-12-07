@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "BAKeypoint.generated.h"
+#include "BAKeypointValue.generated.h"
 
 class UBAKeypoint;
 

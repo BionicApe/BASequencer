@@ -10,8 +10,8 @@ void UKeypointsComponent::GetCurrentKeypointValues(TArray<FBAKeypointValue>& Out
 	OutKeypointValues.Empty();
 
 
-	int32 const BoneIndex = RootComp->GetBoneIndex(RootBone);
-	FTransform const RootTransform = RootComp->GetBoneTransform(BoneIndex);
+	int32 const RootBoneIndex = RootComp->GetBoneIndex(RootBone);
+	FTransform const RootTransform = RootComp->GetBoneTransform(RootBoneIndex);
 
 	for (const UBAKeypoint* const Keypoint : FrameMetadataModel->Keypoints)
 	{
@@ -63,5 +63,5 @@ USkeletalMeshComponent* UKeypointsComponent::GetSkelMeshCompByTag(const FName& T
 		return SkeletalsByTag[Tag];
 	}
 
-	nullptr;
+	return nullptr;
 }
