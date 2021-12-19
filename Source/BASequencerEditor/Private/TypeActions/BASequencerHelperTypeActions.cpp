@@ -1,4 +1,4 @@
-// Created by Bionic Ape. All Rights Reserved.
+// All Rights reserved I Love IceCream LTD.
 
 #include "TypeActions/BASequencerHelperTypeActions.h"
 #include "BASequencerHelper.h"

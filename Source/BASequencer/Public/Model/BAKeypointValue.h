@@ -1,4 +1,4 @@
-// Created by Bionic Ape. All Rights Reserved.
+// All Rights reserved I Love IceCream LTD.
 
 #pragma once
 
@@ -23,6 +23,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FTransform WorldTransform;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector2D ScreenPosition;
 
 	FBAKeypointValue() :Keypoint(nullptr), RelativeTransform(FTransform()), WorldTransform(FTransform())
 	{

@@ -1,7 +1,7 @@
-// Created by Bionic Ape. All Rights Reserved.
+// All Rights reserved I Love IceCream LTD.
 
 #include "TypeActions/BAFrameMetadataModelTypeActions.h"
-#include "BAFrameMetadataModel.h"
+#include "Model/BAFrameMetadataModel.h"
 
 #define LOCTEXT_NAMESPACE "BAFrameMetadataModel_TypeActions"
 

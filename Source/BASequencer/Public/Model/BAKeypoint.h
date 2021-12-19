@@ -1,4 +1,4 @@
-// Created by Bionic Ape. All Rights Reserved.
+// All Rights reserved I Love IceCream LTD.
 
 #pragma once
 
@@ -10,7 +10,7 @@ UENUM(BlueprintType)
 enum class EKeypointType : uint8
 {
 	BONE = 0 UMETA(DisplayName = "Bone"),
-	SOCKET = 1 UMETA(DisplayName = "Bone"),
+	SOCKET = 1 UMETA(DisplayName = "Socket"),
 	VERTEX = 2 UMETA(DisplayName = "Vertex"),
 };
 

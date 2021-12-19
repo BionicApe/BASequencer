@@ -1,7 +1,7 @@
-// Created by Bionic Ape. All Rights Reserved.
+// All Rights reserved I Love IceCream LTD.
 
 #include "Factories/BAFrameMetadataModelFactory.h"
-#include "BAFrameMetadataModel.h"
+#include "Model/BAFrameMetadataModel.h"
 
 UBAFrameMetadataModelFactory::UBAFrameMetadataModelFactory(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {
 	SupportedClass = UBAFrameMetadataModel::StaticClass();

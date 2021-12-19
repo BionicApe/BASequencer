@@ -1,7 +1,7 @@
-// Created by Bionic Ape. All Rights Reserved.
+// All Rights reserved I Love IceCream LTD.
 
 #include "Factories/BAKeypointFactory.h"
-#include "BAKeypoint.h"
+#include "Model/BAKeypoint.h"
 
 UBAKeypointFactory::UBAKeypointFactory(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {
 	SupportedClass = UBAKeypoint::StaticClass();

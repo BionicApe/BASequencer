@@ -1,4 +1,4 @@
-// Created by Bionic Ape. All Rights Reserved.
+// All Rights reserved I Love IceCream LTD.
 
 #pragma once
 
@@ -14,14 +14,15 @@ class UBASequencerHelper;
 /**
  * 
  */
-UCLASS()
+UCLASS(Config=Engine)
 class BASEQUENCER_API UBASequencerSubsystem : public UWorldSubsystem
 {
 	GENERATED_BODY()
 
 public:
 
-	FString ExportFilePath;
+	UPROPERTY(EditAnywhere)
+	FString ExportFilePath = "C:/Dis/DeepAR/Json/";
 
 public:
 

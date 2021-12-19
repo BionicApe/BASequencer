@@ -1,8 +1,10 @@
-// Created by Bionic Ape. All Rights Reserved.
+// All Rights reserved I Love IceCream LTD.
 
-#include "BASequencerEditor.h"
+#include "BASequencerEditorModule.h"
 #include "TypeActions/BASequencerHelperTypeActions.h"
 #include "IAssetTools.h"
+#include "TypeActions/BAKeypointTypeActions.h"
+#include "TypeActions/BAFrameMetadataModelTypeActions.h"
 
 #define LOCTEXT_NAMESPACE "FBASequencerEditorModule"
 
@@ -11,8 +13,10 @@ void FBASequencerEditorModule::StartupModule()
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
 	IAssetTools& AssetTools = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
 
-	EAssetTypeCategories::Type AssetCategoryBit = AssetTools.RegisterAdvancedAssetCategory(FName(TEXT("BASequencerEditor")), LOCTEXT("BionicApeUI", "BionicApeUI"));
+	EAssetTypeCategories::Type AssetCategoryBit = AssetTools.RegisterAdvancedAssetCategory(FName(TEXT("SequencerEditor")), LOCTEXT("BASequencer", "BASequencer"));
 	AssetTools.RegisterAssetTypeActions(MakeShareable(new FBASequencerHelperTypeActions(AssetCategoryBit)));
+	AssetTools.RegisterAssetTypeActions(MakeShareable(new FBAKeypointTypeActions(AssetCategoryBit)));
+	AssetTools.RegisterAssetTypeActions(MakeShareable(new FBAFrameMetadataModelTypeActions(AssetCategoryBit)));
 }
 
 void FBASequencerEditorModule::ShutdownModule()

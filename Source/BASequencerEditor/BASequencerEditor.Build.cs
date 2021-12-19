@@ -1,4 +1,4 @@
-// Created by Bionic Ape. All Rights Reserved.
+// All Rights reserved I Love IceCream LTD.
 
 using UnrealBuildTool;
 
@@ -28,6 +28,7 @@ public class BASequencerEditor : ModuleRules
 			new string[]
 			{
 				"Core",
+				"BASequencer"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);

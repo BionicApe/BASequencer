@@ -9,8 +9,19 @@ void UKeypointsComponent::GetCurrentKeypointValues(TArray<FBAKeypointValue>& Out
 {
 	OutKeypointValues.Empty();
 
+	if (!RootComp)
+	{
+		UE_LOG(LogTemp, Log, TEXT("No valid RootComp"));
+		return;
+	}
 
 	int32 const RootBoneIndex = RootComp->GetBoneIndex(RootBone);
+	if (RootBoneIndex == INDEX_NONE)
+	{
+		UE_LOG(LogTemp, Log, TEXT("No valid RootBone name %s for the RootComp setup set %s"), *RootBone.ToString(), *RootComp->GetName());
+		return;
+	}
+	
 	FTransform const RootTransform = RootComp->GetBoneTransform(RootBoneIndex);
 
 	for (const UBAKeypoint* const Keypoint : FrameMetadataModel->Keypoints)
@@ -32,7 +43,7 @@ void UKeypointsComponent::GetCurrentKeypointValues(TArray<FBAKeypointValue>& Out
 		case EKeypointType::BONE:
 		{
 			int32 const BoneIndex = MeshComp->GetBoneIndex(Keypoint->BoneSocketName);
-			if (INDEX_NONE)
+			if (BoneIndex == INDEX_NONE)
 			{
 				UE_LOG(LogTemp, Log, TEXT("No index for bone: %s"), *Keypoint->BoneSocketName.ToString());
 				continue;

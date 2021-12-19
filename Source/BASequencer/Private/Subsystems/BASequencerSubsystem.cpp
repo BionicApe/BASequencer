@@ -1,4 +1,4 @@
-// Created by Bionic Ape. All Rights Reserved.
+// All Rights reserved I Love IceCream LTD.
 
 
 #include "Subsystems/BASequencerSubsystem.h"
@@ -19,6 +19,9 @@
 #include "GameFramework/GameUserSettings.h"
 #include "Engine/Engine.h"
 
+#include <Serialization/JsonSerializer.h>
+#include <Serialization/JsonWriter.h>
+#include "JsonUtilities/Public/JsonObjectConverter.h"
 
 void UBASequencerSubsystem::RenderSequences(const UBASequencerHelper* const SequenceHelper, FTransform Transform)
 {
@@ -90,7 +93,7 @@ void UBASequencerSubsystem::CreateJson(AActor* MyActor, ULevelSequence* MySequen
 		UE_LOG(LogTemp, Log, TEXT("CreateJson(): KeypointsComponent is null"));
 		return;
 	}
-	
+
 	if (!LevelSequencePlayer)
 	{
 		UE_LOG(LogTemp, Log, TEXT("CreateJson(): LevelSequencePlayer is null"));
@@ -115,38 +118,44 @@ void UBASequencerSubsystem::CreateJson(AActor* MyActor, ULevelSequence* MySequen
 
 	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject());
 	JsonObject->SetNumberField(TEXT("num_keyps"), KeypointValues.Num());
-	
-	FString const FileName = FString::Printf(TEXT("%s%s"), *LevelSequencePlayer->GetName(), *FString::FromInt(Frame));
-	FString const ImageFileName = FString::Printf(TEXT("%s%s"), *LevelSequencePlayer->GetName(), *FString::FromInt(Frame));
 
 
-	JsonObject->SetStringField(TEXT("img_name"), *FString::Printf(TEXT("%s%s%s"), *FileName, TEXT(".png")));
+	FString const ImageFileName = FString::Printf(TEXT("%s-%s.png"), *MySequence->GetName(), *FString::FromInt(Frame));
+	JsonObject->SetStringField(TEXT("img_name"), *ImageFileName);
+
+
+
 
 	TArray<TSharedPtr<FJsonValue>> KeypointsValues;
+	TArray<TSharedPtr<FJsonValue>> KeypointsValuesLegacy;
 	TArray<TSharedPtr<FJsonValue>> KeypointsScreen;
 	TArray<TSharedPtr<FJsonValue>> VisibleKeypoints;
 	TArray<TSharedPtr<FJsonValue>> OccludedKeypoints;
 
 
-	for (FBAKeypointValue Kpv : KeypointValues)
+
+	for (FBAKeypointValue& Kpv : KeypointValues)
 	{
 		FVector const KpWorldLocation = Kpv.WorldTransform.GetLocation();
+		UGameplayStatics::ProjectWorldToScreen(PC, KpWorldLocation, Kpv.ScreenPosition);
 
-		KeypointsValues.Add(MakeShared<FJsonValueNumber>(KpWorldLocation.X));
-		KeypointsValues.Add(MakeShared<FJsonValueNumber>(KpWorldLocation.Y));
-		KeypointsValues.Add(MakeShared<FJsonValueNumber>(KpWorldLocation.Z));
+		TSharedPtr<FJsonObject> KpValueJson = FJsonObjectConverter::UStructToJsonObject<FBAKeypointValue>(Kpv);
+		int32 KpIndex = KeypointsValues.Add(MakeShared<FJsonValueObject>(KpValueJson));
 
-		FVector2D ScreenPosition;
-		UGameplayStatics::ProjectWorldToScreen(PC, KpWorldLocation, ScreenPosition);
-		KeypointsScreen.Add(MakeShared<FJsonValueNumber>(ScreenPosition.X));
-		KeypointsScreen.Add(MakeShared<FJsonValueNumber>(ScreenPosition.Y));
+		KeypointsValuesLegacy.Add(MakeShared<FJsonValueNumber>(KpWorldLocation.X));
+		KeypointsValuesLegacy.Add(MakeShared<FJsonValueNumber>(KpWorldLocation.Y));
+		KeypointsValuesLegacy.Add(MakeShared<FJsonValueNumber>(KpWorldLocation.Z));
+		
+		KeypointsScreen.Add(MakeShared<FJsonValueNumber>(Kpv.ScreenPosition.X));
+		KeypointsScreen.Add(MakeShared<FJsonValueNumber>(Kpv.ScreenPosition.Y));
 	}
 
+	JsonObject->SetArrayField(TEXT("keypointValues"), KeypointsValues);
 	JsonObject->SetArrayField(TEXT("keyps"), KeypointsScreen);
-	JsonObject->SetArrayField(TEXT("keyps_3d"), KeypointsValues);
+	JsonObject->SetArrayField(TEXT("keyps_3d"), KeypointsValuesLegacy);
 	JsonObject->SetStringField(TEXT("type"), KeypointsComponent->FrameMetadataModel->Type);
 	JsonObject->SetArrayField(TEXT("visible_keyps"), VisibleKeypoints);
-	JsonObject->SetArrayField(TEXT("occluded_keyps"), OccludedKeypoints);	
+	JsonObject->SetArrayField(TEXT("occluded_keyps"), OccludedKeypoints);
 
 	TSharedPtr<FJsonObject> CameraJson = MakeShareable(new FJsonObject());
 	CameraJson->SetNumberField(TEXT("fovy"), CameraComponent->FieldOfView);
@@ -154,7 +163,7 @@ void UBASequencerSubsystem::CreateJson(AActor* MyActor, ULevelSequence* MySequen
 	FIntPoint ScreenResolution = GEngine->GetGameUserSettings()->GetScreenResolution();
 	CameraJson->SetNumberField(TEXT("width"), ScreenResolution.X);
 	CameraJson->SetNumberField(TEXT("height"), ScreenResolution.Y);
-	JsonObject->SetObjectField(TEXT("camera"),CameraJson);
+	JsonObject->SetObjectField(TEXT("camera"), CameraJson);
 
 	TSharedPtr<FJsonObject> ObjectPose = MakeShareable(new FJsonObject());
 	//			"obj_pose": {
@@ -166,6 +175,14 @@ void UBASequencerSubsystem::CreateJson(AActor* MyActor, ULevelSequence* MySequen
 	JsonObject->SetObjectField(TEXT("obj_pose"), ObjectPose);
 
 	//Save it to a file
-	//FFileHelper::SaveStringToFile(LoadedBoilerplates	, *FString::Printf(TEXT("%s%s%hs"), *ExportFilePath, *NewModuleName, ".h"));
+	FString const JsonFileName = FString::Printf(TEXT("%s%s-%s.json"), *ExportFilePath, *MySequence->GetName(), *FString::FromInt(Frame));
+
+
+	FString JsonString;
+	auto JsonWriter = TJsonWriterFactory<TCHAR, TCondensedJsonPrintPolicy<TCHAR> >::Create(&JsonString);
+	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), JsonWriter);
+	JsonWriter->Close();
+
+	FFileHelper::SaveStringToFile(JsonString, *JsonFileName);
 
 }

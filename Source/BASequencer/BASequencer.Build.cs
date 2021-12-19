@@ -42,7 +42,8 @@ public class BASequencer : ModuleRules
                 "SlateCore",
                 "LevelSequence",
                 "MovieScene",
-                "Json"
+                "Json",
+                "JsonUtilities"
             }
             );
 

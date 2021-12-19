@@ -1,7 +1,7 @@
-// Created by Bionic Ape. All Rights Reserved.
+// All Rights reserved I Love IceCream LTD.
 
 #include "TypeActions/BAKeypointTypeActions.h"
-#include "BAKeypoint.h"
+#include "Model/BAKeypoint.h"
 
 #define LOCTEXT_NAMESPACE "BAKeypoint_TypeActions"
 
